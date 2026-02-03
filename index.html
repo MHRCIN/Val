@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="pl">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+      <title>Walentynka?</title>
+      <style>
+         :root{
+         --bg1:#0b0f1a;
+         --bg2:#1a1030;
+         --card:#0f172aCC;
+         --text:#e5e7eb;
+         --muted:#a1a1aa;
+         --yes:#22c55e;
+         --no:#ef4444;
+         --shadow: 0 20px 60px rgba(0,0,0,.45);
+         --radius: 24px;
+         --frameH: clamp(240px, 46svh, 520px);
+         }
+         *{ box-sizing:border-box; }
+         html, body { height: 100%; }
+         body{
+         margin:0;
+         min-height:100svh;
+         font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+         color:var(--text);
+         background:
+         radial-gradient(1200px 600px at 20% 10%, #7c3aed22, transparent 60%),
+         radial-gradient(900px 500px at 80% 20%, #22c55e22, transparent 60%),
+         linear-gradient(160deg, var(--bg1), var(--bg2));
+         display:flex;
+         align-items:center;
+         justify-content:center;
+         padding:
+         calc(16px + env(safe-area-inset-top))
+         calc(16px + env(safe-area-inset-right))
+         calc(16px + env(safe-area-inset-bottom))
+         calc(16px + env(safe-area-inset-left));
+         overflow:hidden;
+         }
+         .wrap{
+         width: 100%;
+         max-width: 520px;
+         margin: 0 auto;
+         display:flex;
+         justify-content:center;
+         }
+         .card{
+         width: 100%;
+         background: var(--card);
+         backdrop-filter: blur(10px);
+         border: 1px solid rgba(255,255,255,.08);
+         border-radius: var(--radius);
+         box-shadow: var(--shadow);
+         padding: clamp(14px, 3.5vw, 18px);
+         position: relative;
+         overflow: visible;
+         }
+         h1{
+         margin: 14px 0 6px;
+         font-size: clamp(20px, 5vw, 34px);
+         line-height:1.1;
+         text-align:center;
+         letter-spacing:.2px;
+         }
+         p{
+         margin: 0 0 14px;
+         text-align:center;
+         color: var(--muted);
+         font-size: clamp(12px, 3.5vw, 16px);
+         }
+         .gifbox{
+         width: 100%;
+         display:flex;
+         justify-content:center;
+         padding: 6px 0 2px;
+         }
+         .gifframe{
+         height: var(--frameH);
+         width: min(92vw, calc(var(--frameH) * 4 / 5));
+         overflow:hidden;
+         border-radius: 18px;
+         box-shadow: 0 16px 40px rgba(0,0,0,.45);
+         border: 1px solid rgba(255,255,255,.10);
+         background: rgba(0,0,0,.12);
+         display:grid;
+         place-items:center;
+         }
+         .gifframe img{
+         width:100%;
+         height:100%;
+         object-fit: cover;
+         display:block;
+         }
+         .btnArea{
+         margin-top: 12px;
+         height: clamp(150px, 20svh, 220px);
+         display:flex;
+         align-items:center;
+         justify-content:center;
+         }
+         .btnRow{
+         display:flex;
+         gap: 12px;
+         align-items:center;
+         justify-content:center;
+         width: 100%;
+         flex-wrap: wrap;
+         }
+         button{
+         border:0;
+         padding: 14px 18px;
+         font-weight: 800;
+         border-radius: 999px;
+         font-size: 16px;
+         cursor:pointer;
+         touch-action: manipulation;
+         box-shadow: 0 12px 26px rgba(0,0,0,.35);
+         transition: transform .12s ease, filter .12s ease, opacity .12s ease, left .12s ease, top .12s ease;
+         user-select:none;
+         line-height: 1;
+         transform-origin: center center;
+         width: clamp(220px, 70vw, 320px);
+         position: relative;
+         z-index: 1;
+         }
+         button:active{ transform: translateY(1px) scale(.99); }
+         #yesBtn{
+         background: linear-gradient(180deg, #34d399, var(--yes));
+         color:#06240f;
+         }
+         #noBtn{
+         background: linear-gradient(180deg, #fb7185, var(--no));
+         color:#2a0707;
+         opacity: 1;
+         }
+
+         #noBtn.flee{
+         width: clamp(140px, 45vw, 190px);
+         position: absolute;
+         left: 50%;
+         top: 50%;
+         transform: translate(-50%, -50%);
+         z-index: 10;
+         }
+         .confetti{
+         position: fixed;
+         inset: 0;
+         pointer-events:none;
+         overflow:hidden;
+         }
+         .piece{
+         position:absolute;
+         width: 10px;
+         height: 16px;
+         opacity:.9;
+         border-radius: 3px;
+         animation: fall 1200ms linear forwards;
+         filter: drop-shadow(0 8px 10px rgba(0,0,0,.35));
+         }
+         @keyframes fall{
+         from { transform: translate3d(var(--x), -40px, 0) rotate(0deg); }
+         to   { transform: translate3d(calc(var(--x) + var(--drift)), 110svh, 0) rotate(720deg); }
+         }
+         @media (max-height: 740px){
+         :root{ --frameH: clamp(210px, 42svh, 420px); }
+         .btnArea{ height: clamp(130px, 18svh, 190px); }
+         }
+      </style>
+   </head>
+   <body>
+      <div class="wrap">
+         <div class="card" id="flyZone">
+            <div class="gifbox">
+               <div class="gifframe">
+                  <img id="gif" src= "media/cat.gif" alt="Zabawny gif" />
+               </div>
+            </div>
+            <h1 id="question">Czy zostaniesz moją walentynką? 💘</h1>
+            <p id="subtitle">No weź… Halinka, będzie super 💞</p>
+            <div class="btnArea" id="arena">
+               <div class="btnRow" aria-label="Wybór odpowiedzi" id="btnRow">
+                  <button id="yesBtn" type="button">Tak</button>
+                  <button id="noBtn" type="button">Nie</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="confetti" id="confetti"></div>
+      <script>
+         const MEDIA = "media/"
+         const flyZone = document.getElementById('flyZone');
+         const arena = document.getElementById('arena');
+         
+         const noBtn = document.getElementById('noBtn');
+         const yesBtn = document.getElementById('yesBtn');
+         const question = document.getElementById('question');
+         const subtitle = document.getElementById('subtitle');
+         const confetti = document.getElementById('confetti');
+         const gif = document.getElementById('gif');
+         
+         let noCount = 0;
+         let noIsFleeing = false;
+         
+         const thinkTwice = [
+           "Zastanów się 🤔","Jesteś pewna?","Na 100%?","Jeszcze jedna szansa 🥺",
+           "Serio mówisz „nie”?","Pomyśl jeszcze chwilkę…","No weź 😅","To może jednak tak?",
+           "Nie bądź taka 😇","Ostatnia okazja!","Kliknij „Tak”, zobaczysz 😏","Obiecuję, że będzie fajnie 💖",
+           "Nie żałuj potem 👀","To byłoby super 🥰","Proszeee 🥺","KLAUDIA NOOOOOOOOOOOOOOO"
+         ];
+         
+         const noTexts = [
+           "Nie","Na pewno?","Ej no…","Ostatnia szansa","Weź sie no 😅","Kliknij „Tak”","Dobra, już wystarczy",
+           "To już przesada 😐","Naprawdę klikasz „Nie”?","Ja się poddaję…","Nie wierzę 🙃","Okej, boli",
+           "Złamane serce","To ja już nic nie mówię…","Wiem, że klikniesz „Tak” 😏","Serio? 🥺"
+         ];
+         
+         const subtitles = [
+           "No weź… Halinka, będzie super 💞",
+           "Klaudusia, serio pytam 😇",
+           "Skarbie... pomyśl jeszcze chwilkę 🤔",
+           "Klaudiaaa, nie rób tak 😅",
+           "Kochanie, obiecuję dobrą zabawę 🥰",
+           "Słonko, to nie jest trudny wybór 😉",
+           "Ej mysza, przecież wiesz że chcesz 😏",
+           "Klaudusia, no proszę 🙏",
+           "To… boli 💔",
+           "Klaudia, łamiesz mi serce 🥺",
+           "Myszko, jeszcze jedno kliknięcie…",
+           "SKARBIE, to już przesada 😐",
+           "Proszę, daj mi szansę 💖",
+           "Klaudusia, obiecuję że nie pożałujesz 😄",
+           "Wrrrr, ostatnie ostrzeżenie 😈",
+           "Nie daj sie prosic 🥺"
+         ];
+         
+        const sadGIF = Array.from({ length: 16 }, (_, i) => `${MEDIA}${i+1}.gif`);
+
+
+         
+         function moveNoButton(){
+           const rect = flyZone.getBoundingClientRect();
+           const btnRect = noBtn.getBoundingClientRect();
+         
+           const pad = 14;
+         
+           const maxX = Math.max(0, rect.width  - btnRect.width  - pad * 2);
+           const maxY = Math.max(0, rect.height - btnRect.height - pad * 2);
+         
+           const x = pad + Math.random() * maxX;
+           const y = pad + Math.random() * maxY;
+         
+           noBtn.style.left = x + "px";
+           noBtn.style.top  = y + "px";
+           noBtn.style.transform = "translate(0,0)";
+         }
+         
+         function burstConfetti(){
+           confetti.innerHTML = "";
+           const pieces = 90;
+           for (let i=0; i<pieces; i++){
+             const p = document.createElement('div');
+             p.className = 'piece';
+             const x = Math.random() * 100;
+             const drift = (Math.random() * 60 - 30) + "vw";
+             p.style.setProperty('--x', x + "vw");
+             p.style.setProperty('--drift', drift);
+             p.style.left = "0";
+             p.style.top = "0";
+             p.style.background = `hsl(${Math.floor(Math.random()*360)}, 90%, 60%)`;
+             p.style.animationDuration = (900 + Math.random()*700) + "ms";
+             p.style.width = (8 + Math.random()*10) + "px";
+             p.style.height = (10 + Math.random()*18) + "px";
+             confetti.appendChild(p);
+           }
+           setTimeout(() => confetti.innerHTML = "", 1700);
+         }
+         
+         function weirdEffect(){
+           const i = noCount;
+         
+           const iNo  = Math.min(i, noTexts.length - 1);
+           const iQ   = Math.min(i, thinkTwice.length - 1);
+           const iSub = Math.min(i, subtitles.length - 1);
+           const iGif = Math.min(i, sadGIF.length - 1);
+         
+           if (!noIsFleeing){
+             noIsFleeing = true;
+             noBtn.classList.add('flee');
+             requestAnimationFrame(moveNoButton);
+           } else {
+             moveNoButton();
+           }
+         
+           noBtn.textContent = noTexts[iNo];
+           question.textContent = thinkTwice[iQ];
+           subtitle.textContent = subtitles[iSub];
+           gif.src = sadGIF[iGif] + "?t=" + Date.now();
+         
+           const scale = 1 + Math.min(0.5, i * 0.05);
+           yesBtn.style.transform = `scale(${scale})`;
+
+        // #TODO Change opacity when click no
+        //    if (i >= 4){
+        //      noBtn.style.opacity = String(Math.max(0.55, 1 - (i - 3) * 0.08));
+        //    }
+         
+           if (i === 15){
+             noBtn.remove();
+           }
+         
+           noCount++;
+         }
+         
+         noBtn.addEventListener('click', weirdEffect);
+         
+         yesBtn.addEventListener('click', () => {
+           burstConfetti();
+           question.textContent = "JUPI! 💖";
+           subtitle.textContent = "Lov juuuu 😄";
+           gif.src = MEDIA + "happy_cat.gif" + "?t=" + Date.now();
+         
+           arena.style.display = "none";
+         });
+         
+         window.addEventListener('resize', () => {
+           if (noIsFleeing && document.body.contains(noBtn)) moveNoButton();
+         });
+      </script>
+   </body>
+</html>
